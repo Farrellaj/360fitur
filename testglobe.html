@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>TurboFlow Pro - Pompa Industri 360°</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  background: linear-gradient(135deg, #0a2b3e 0%, #0a1a2a 100%);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 16px;
+}
+
+/* Container utama responsive */
+.product-container {
+  max-width: 1400px;
+  width: 100%;
+  background: linear-gradient(145deg, #ffffff 0%, #f8faff 100%);
+  border-radius: clamp(24px, 5vw, 48px);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25), 0 0 0 1px rgba(66, 153, 225, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+/* Layout fleksibel - auto adjust */
+.product-layout {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+/* Area 3D Viewer - responsive height */
+.viewer-section {
+  background: #000000;
+  position: relative;
+  flex: 1.2;
+  min-width: 280px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: inset 0 0 30px rgba(0,0,0,0.3);
+}
+
+#container {
+  width: 100%;
+  height: 100%;
+  min-height: 450px;
+  background: #000;
+  cursor: grab;
+  touch-action: none; /* Optimasi touch */
+}
+
+#container:active {
+  cursor: grabbing;
+}
+
+/* Info produk - responsive padding */
+.product-info {
+  flex: 1;
+  min-width: 280px;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(24px, 5vw, 48px) clamp(20px, 4vw, 40px);
+}
+
+/* Badge 360 responsive */
+.badge-360 {
+  position: absolute;
+  top: clamp(12px, 3vw, 20px);
+  left: clamp(12px, 3vw, 20px);
+  background: linear-gradient(135deg, #0066ff, #00ccff);
+  color: white;
+  font-weight: bold;
+  padding: clamp(6px, 2vw, 8px) clamp(12px, 3vw, 18px);
+  border-radius: 40px;
+  font-size: clamp(11px, 3vw, 14px);
+  letter-spacing: 1px;
+  box-shadow: 0 4px 15px rgba(0,102,255,0.4);
+  z-index: 10;
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.badge-360::before {
+  content: "🔄";
+  font-size: clamp(12px, 3.5vw, 16px);
+}
+
+/* Kategori */
+.product-category {
+  font-size: clamp(11px, 2.5vw, 13px);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #0066ff;
+  font-weight: 600;
+  margin-bottom: clamp(12px, 3vw, 16px);
+}
+
+/* Nama produk responsive */
+.product-title {
+  font-size: clamp(1.6rem, 6vw, 2.5rem);
+  font-weight: 800;
+  color: #0a1e2c;
+  margin-bottom: clamp(12px, 3vw, 16px);
+  line-height: 1.2;
+  background: linear-gradient(135deg, #0a2b3e, #0066ff);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.product-subtitle {
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
+  color: #4a627a;
+  margin-bottom: clamp(16px, 4vw, 24px);
+  border-left: 3px solid #0066ff;
+  padding-left: clamp(12px, 3vw, 16px);
+  font-weight: 500;
+}
+
+/* Harga responsive */
+.price-section {
+  margin: clamp(16px, 4vw, 24px) 0;
+  display: flex;
+  align-items: baseline;
+  gap: clamp(8px, 2vw, 12px);
+  flex-wrap: wrap;
+}
+
+.current-price {
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  font-weight: 800;
+  color: #0066ff;
+}
+
+.old-price {
+  font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+  color: #94a3b8;
+  text-decoration: line-through;
+}
+
+.discount {
+  background: #ff4d4d;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 30px;
+  font-size: clamp(0.7rem, 2vw, 0.8rem);
+  font-weight: bold;
+}
+
+/* Deskripsi box responsive */
+.description-box {
+  margin: clamp(16px, 4vw, 20px) 0;
+  background: #f8fafc;
+  padding: clamp(16px, 4vw, 20px);
+  border-radius: clamp(20px, 4vw, 24px);
+  border: 1px solid #e2edff;
+}
+
+.description-title {
+  font-weight: 700;
+  color: #0a2b3e;
+  margin-bottom: 12px;
+  font-size: clamp(0.95rem, 3vw, 1.1rem);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.description-text {
+  color: #334155;
+  line-height: 1.6;
+  font-size: clamp(0.85rem, 2.5vw, 0.95rem);
+  margin-bottom: 16px;
+}
+
+.feature-list {
+  list-style: none;
+  margin-top: 12px;
+}
+
+.feature-list li {
+  margin: clamp(8px, 2vw, 10px) 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: clamp(0.8rem, 2.2vw, 0.9rem);
+  color: #1e293b;
+  flex-wrap: wrap;
+}
+
+.feature-list li::before {
+  content: "✓";
+  color: #0066ff;
+  font-weight: bold;
+  background: #e6f0ff;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+
+/* Tombol aksi responsive */
+.action-buttons {
+  display: flex;
+  gap: clamp(12px, 3vw, 16px);
+  margin-top: clamp(20px, 5vw, 28px);
+  flex-wrap: wrap;
+}
+
+.btn-primary, .btn-outline {
+  flex: 1;
+  min-width: 140px;
+  text-align: center;
+  padding: clamp(12px, 3vw, 14px) clamp(20px, 4vw, 32px);
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
+  font-weight: 700;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: linear-gradient(95deg, #0066ff, #0099ff);
+  border: none;
+  color: white;
+  box-shadow: 0 6px 14px rgba(0,102,255,0.3);
+}
+
+.btn-primary:active {
+  transform: scale(0.97);
+  transition: 0.1s;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid #0066ff;
+  color: #0066ff;
+}
+
+.btn-outline:active {
+  transform: scale(0.97);
+  background: #0066ff10;
+}
+
+/* Loading indicator responsif */
+.loading-indicator {
+  position: absolute;
+  bottom: clamp(12px, 3vw, 20px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0,0,0,0.8);
+  backdrop-filter: blur(8px);
+  color: white;
+  padding: clamp(6px, 2vw, 8px) clamp(16px, 4vw, 20px);
+  border-radius: 40px;
+  font-size: clamp(11px, 2.5vw, 13px);
+  z-index: 20;
+  pointer-events: none;
+  font-weight: 500;
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* Hint text responsif */
+.hint-text {
+  margin-top: clamp(16px, 4vw, 20px);
+  font-size: clamp(10px, 2vw, 12px);
+  color: #6c86a3;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.hint-text span {
+  background: #f0f4fa;
+  padding: 4px 10px;
+  border-radius: 30px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 900px) {
+  body {
+    padding: 12px;
+  }
+  
+  .product-layout {
+    flex-direction: column;
+  }
+  
+  .viewer-section {
+    border-radius: clamp(20px, 4vw, 32px) clamp(20px, 4vw, 32px) 0 0;
+    min-height: 400px;
+  }
+  
+  #container {
+    min-height: 400px;
+  }
+  
+  .btn-primary, .btn-outline {
+    white-space: normal;
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 600px) {
+  body {
+    padding: 8px;
+  }
+  
+  .viewer-section {
+    min-height: 350px;
+  }
+  
+  #container {
+    min-height: 350px;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .btn-primary, .btn-outline {
+    width: 100%;
+  }
+  
+  .feature-list li {
+    font-size: 0.8rem;
+  }
+  
+  .badge-360 {
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .viewer-section {
+    min-height: 320px;
+  }
+  
+  #container {
+    min-height: 320px;
+  }
+  
+  .product-info {
+    padding: 20px;
+  }
+  
+  .description-box {
+    padding: 14px;
+  }
+  
+  .hint-text span {
+    font-size: 10px;
+    padding: 3px 8px;
+  }
+}
+
+/* Landscape mode untuk mobile */
+@media (max-height: 600px) and (orientation: landscape) {
+  .product-layout {
+    flex-direction: row;
+  }
+  
+  .viewer-section {
+    min-height: 100vh;
+    height: auto;
+  }
+  
+  #container {
+    min-height: 100vh;
+  }
+  
+  .product-info {
+    overflow-y: auto;
+    max-height: 100vh;
+  }
+  
+  body {
+    padding: 0;
+  }
+}
+
+/* Touch device optimasi */
+@media (hover: none) and (pointer: coarse) {
+  .btn-primary, .btn-outline {
+    padding: 14px 20px;
+  }
+  
+  #container {
+    cursor: default;
+  }
+  
+  .badge-360 {
+    pointer-events: none;
+  }
+}
+
+/* Animasi loading */
+@keyframes pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.loading-indicator:not([style*="display: none"]) {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+</style>
+</head>
+<body>
+
+<div class="product-container">
+  <div class="product-layout">
+    <!-- Bagian Kiri: Viewer 3D 360° -->
+    <div class="viewer-section">
+      <div class="badge-360">360° INTERAKTIF</div>
+      <div id="container"></div>
+      <div class="loading-indicator" id="loadingMsg">🔄 Memuat model pompa 3D ...</div>
+    </div>
+    
+    <!-- Bagian Kanan: Informasi Produk -->
+    <div class="product-info">
+      <div class="product-category">INDUSTRIAL SERIES</div>
+      <h1 class="product-title">TurboFlow Pro<br>Pompa Sentrifugal</h1>
+      <div class="product-subtitle">Efisiensi tinggi, aliran stabil, desain anti-korosi</div>
+      
+      <div class="price-section">
+        <span class="current-price">Rp 4.850.000</span>
+        <span class="old-price">Rp 6.250.000</span>
+        <span class="discount">-22%</span>
+      </div>
+      
+      <div class="description-box">
+        <div class="description-title">
+          <span>📋</span> Detail Produk
+        </div>
+        <div class="description-text">
+          Pompa sentrifugal industri generasi terbaru dengan teknologi hemat energi. 
+          Dirancang untuk aplikasi pengairan, industri kimia, dan sistem sirkulasi air bertekanan tinggi.
+          Nikmati pengalaman melihat produk dari segala sudut dengan fitur 360° — drag untuk memutar, zoom untuk detail.
+        </div>
+        <ul class="feature-list">
+          <li>Daya Maks: 7.5 HP / 5.5 kW</li>
+          <li>Kapasitas Aliran: 450 L/menit</li>
+          <li>Material: Stainless Steel 304 + Corrosion Coating</li>
+          <li>Garansi Resmi 3 Tahun</li>
+          <li>Bebas perawatan 1000 jam pertama</li>
+        </ul>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="btn-primary" id="buyBtn">🛒 Beli Sekarang</button>
+        <button class="btn-outline" id="inquiryBtn">📞 Tanya Produk</button>
+      </div>
+      <div class="hint-text">
+        <span>🖱️ Drag untuk 360°</span>
+        <span>🔍 Pinch / Scroll untuk zoom</span>
+        <span>📱 Sentuh & putar</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- THREE.JS MODULE IMPORTS -->
+<script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.128.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.128.0/examples/jsm/"
+    }
+  }
+</script>
+
+<script type="module">
+  import * as THREE from 'three';
+  import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+  import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
+  // --- KONFIGURASI VIEWER RESPONSIF ---
+  const container = document.getElementById('container');
+  const loadingMsgDiv = document.getElementById('loadingMsg');
+  
+  // Fungsi untuk mendapatkan ukuran container yang akurat
+  function getContainerSize() {
+    const rect = container.getBoundingClientRect();
+    return {
+      width: rect.width || container.clientWidth || 500,
+      height: rect.height || container.clientHeight || 450
+    };
+  }
+  
+  let { width, height } = getContainerSize();
+  
+  // Scene dengan background hitam pekat
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x000000);
+  scene.environment = null;
+  
+  // Kamera dengan aspect ratio dinamis
+  const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+  camera.position.set(2, 1.5, 3.5);
+  
+  // Renderer dengan optimasi mobile
+  const renderer = new THREE.WebGLRenderer({ 
+    antialias: true, 
+    alpha: false,
+    powerPreference: "high-performance"
+  });
+  renderer.setSize(width, height);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 1);
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.1;
+  
+  // Kosongkan container dan tambahkan canvas
+  while (container.firstChild) {
+    container.removeChild(container.firstChild);
+  }
+  container.appendChild(renderer.domElement);
+  
+  // --- PENCahAYAAN OPTIMAL UNTUK SEMUA DEVICE ---
+  const ambientLight = new THREE.AmbientLight(0x404060, 0.65);
+  scene.add(ambientLight);
+  
+  const mainLight = new THREE.DirectionalLight(0xffffff, 1.2);
+  mainLight.position.set(2, 3, 2.5);
+  mainLight.castShadow = false;
+  scene.add(mainLight);
+  
+  const backFill = new THREE.DirectionalLight(0x88aaff, 0.7);
+  backFill.position.set(-1.5, 1.8, -2);
+  backFill.castShadow = false;
+  scene.add(backFill);
+  
+  const rimLight = new THREE.PointLight(0x66aaff, 0.6);
+  rimLight.position.set(1.2, -0.8, 1.5);
+  scene.add(rimLight);
+  
+  const fillWarm = new THREE.PointLight(0xffaa66, 0.4);
+  fillWarm.position.set(0, -1.2, 0.8);
+  scene.add(fillWarm);
+  
+  const rightLight = new THREE.PointLight(0xffffff, 0.5);
+  rightLight.position.set(1.8, 0.5, 1);
+  scene.add(rightLight);
+  
+  // --- ORBIT CONTROLS DENGAN OPTIMASI TOUCH ---
+  const controls = new OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.07;
+  controls.rotateSpeed = 1.5;
+  controls.zoomSpeed = 1.0;
+  controls.enableZoom = true;
+  controls.enablePan = false;
+  controls.autoRotate = false;
+  controls.target.set(0, 0, 0);
+  
+  // Optimasi untuk touch device
+  controls.touchRotate = true;
+  controls.touchZoom = true;
+  
+  // --- MEMBUAT MODEL POMPA YANG DETAIL ---
+  let mainModel = null;
+  
+  function createPumpModel() {
+    const pumpGroup = new THREE.Group();
+    
+    // Bodi Utama (silinder horizontal)
+    const bodyGeo = new THREE.CylinderGeometry(0.65, 0.65, 1.6, 64, 32);
+    const bodyMat = new THREE.MeshStandardMaterial({ color: 0x3a86ff, metalness: 0.75, roughness: 0.25, emissive: 0x001133 });
+    const body = new THREE.Mesh(bodyGeo, bodyMat);
+    body.castShadow = false;
+    body.receiveShadow = false;
+    body.rotation.z = Math.PI / 2;
+    body.position.x = 0;
+    pumpGroup.add(body);
+    
+    // Casing depan
+    const frontCapGeo = new THREE.CylinderGeometry(0.72, 0.72, 0.35, 64);
+    const capMat = new THREE.MeshStandardMaterial({ color: 0xc0e0ff, metalness: 0.8, roughness: 0.2 });
+    const frontCap = new THREE.Mesh(frontCapGeo, capMat);
+    frontCap.position.x = 0.95;
+    frontCap.rotation.z = Math.PI / 2;
+    pumpGroup.add(frontCap);
+    
+    // Kipas pendingin
+    const fanBaseGeo = new THREE.CylinderGeometry(0.68, 0.68, 0.2, 48);
+    const fanMat = new THREE.MeshStandardMaterial({ color: 0xddddff, metalness: 0.65 });
+    const fanBase = new THREE.Mesh(fanBaseGeo, fanMat);
+    fanBase.position.x = -0.92;
+    fanBase.rotation.z = Math.PI / 2;
+    pumpGroup.add(fanBase);
+    
+    // Detail sirip pendingin
+    for (let i = -0.6; i <= 0.6; i += 0.4) {
+      const ringGeo = new THREE.TorusGeometry(0.7, 0.05, 48, 120);
+      const ringMat = new THREE.MeshStandardMaterial({ color: 0x88aaff, metalness: 0.85 });
+      const ring = new THREE.Mesh(ringGeo, ringMat);
+      ring.rotation.x = Math.PI / 2;
+      ring.position.x = i;
+      ring.rotation.z = Math.PI / 2;
+      pumpGroup.add(ring);
+    }
+    
+    // Flange dan pipa
+    const flangeMat = new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.9, roughness: 0.3 });
+    
+    // Outlet
+    const outlet = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.45, 0.25, 48), flangeMat);
+    outlet.position.set(0.3, 0.85, 0);
+    pumpGroup.add(outlet);
+    
+    const outletNeck = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.28, 0.5, 40), flangeMat);
+    outletNeck.position.set(0.3, 1.1, 0);
+    pumpGroup.add(outletNeck);
+    
+    // Inlet
+    const inlet = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.48, 0.45, 48), flangeMat);
+    inlet.position.set(1.3, 0.1, 0);
+    inlet.rotation.z = Math.PI / 2;
+    pumpGroup.add(inlet);
+    
+    const inletPipe = new THREE.Mesh(new THREE.CylinderGeometry(0.32, 0.32, 0.7, 40), flangeMat);
+    inletPipe.position.set(1.7, 0.1, 0);
+    inletPipe.rotation.z = Math.PI / 2;
+    pumpGroup.add(inletPipe);
+    
+    // Impeller
+    const impellerGroup = new THREE.Group();
+    const centerDisc = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.15, 48), 
+      new THREE.MeshStandardMaterial({ color: 0xffaa55, metalness: 0.85, roughness: 0.2 }));
+    impellerGroup.add(centerDisc);
+    
+    for (let i = 0; i < 8; i++) {
+      const bladeGeo = new THREE.BoxGeometry(0.12, 0.55, 0.25);
+      const bladeMat = new THREE.MeshStandardMaterial({ color: 0xdd8844, metalness: 0.7 });
+      const blade = new THREE.Mesh(bladeGeo, bladeMat);
+      const angle = (i / 8) * Math.PI * 2;
+      blade.position.set(Math.cos(angle) * 0.65, Math.sin(angle) * 0.65, 0);
+      blade.rotation.z = angle;
+      impellerGroup.add(blade);
+    }
+    impellerGroup.position.set(0, 0, 0.15);
+    pumpGroup.add(impellerGroup);
+    
+    // Base dudukan
+    const basePlate = new THREE.Mesh(new THREE.BoxGeometry(1.8, 0.12, 1.2), 
+      new THREE.MeshStandardMaterial({ color: 0x2266aa, metalness: 0.5, roughness: 0.6 }));
+    basePlate.position.set(0, -0.85, 0);
+    pumpGroup.add(basePlate);
+    
+    // Baut
+    const boltMat = new THREE.MeshStandardMaterial({ color: 0xccccdd, metalness: 0.9 });
+    const positions = [[-0.7, -0.78, 0.5], [0.7, -0.78, 0.5], [-0.7, -0.78, -0.5], [0.7, -0.78, -0.5]];
+    positions.forEach(pos => {
+      const bolt = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.1, 16), boltMat);
+      bolt.position.set(pos[0], pos[1], pos[2]);
+      pumpGroup.add(bolt);
+    });
+    
+    // Logo ring
+    const logoRing = new THREE.Mesh(new THREE.TorusGeometry(0.45, 0.05, 48, 96), 
+      new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.9 }));
+    logoRing.rotation.x = Math.PI / 2;
+    logoRing.position.set(-0.2, 0.65, 0.45);
+    pumpGroup.add(logoRing);
+    
+    return pumpGroup;
+  }
+  
+  // --- LOAD / TAMPILKAN MODEL ---
+  setTimeout(() => {
+    const pumpModel = createPumpModel();
+    pumpModel.scale.setScalar(0.85);
+    pumpModel.position.set(0, -0.1, 0);
+    
+    // Center model
+    const box = new THREE.Box3().setFromObject(pumpModel);
+    const center = box.getCenter(new THREE.Vector3());
+    pumpModel.position.sub(center);
+    pumpModel.position.y += 0.1;
+    
+    scene.add(pumpModel);
+    mainModel = pumpModel;
+    
+    // Adjust kamera berdasarkan ukuran model
+    const size = box.getSize(new THREE.Vector3());
+    const maxDim = Math.max(size.x, size.y, size.z);
+    const distance = maxDim * 2.2;
+    camera.position.set(1.8, 1.2, distance);
+    controls.target.set(0, 0, 0);
+    controls.update();
+    
+    loadingMsgDiv.textContent = "✅ Pompa 3D siap | Drag untuk 360°";
+    setTimeout(() => {
+      loadingMsgDiv.style.opacity = '0';
+      setTimeout(() => {
+        if (loadingMsgDiv) loadingMsgDiv.style.display = 'none';
+      }, 1000);
+    }, 1800);
+  }, 100);
+  
+  // --- ANIMASI LOOP STABIL ---
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    renderer.render(scene, camera);
+  }
+  animate();
+  
+  // --- RESIZE HANDLER RESPONSIF UNTUK SEMUA DEVICE ---
+  let resizeTimeout;
+  function handleResize() {
+    // Debounce resize untuk performa
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+      const newSize = getContainerSize();
+      const newWidth = newSize.width;
+      const newHeight = newSize.height;
+      
+      if (newWidth > 0 && newHeight > 0) {
+        camera.aspect = newWidth / newHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(newWidth, newHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        
+        // Update controls
+        controls.update();
+      }
+    }, 150);
+  }
+  
+  window.addEventListener('resize', handleResize);
+  
+  // Observer untuk perubahan ukuran container (misal saat rotate)
+  const resizeObserver = new ResizeObserver(() => {
+    handleResize();
+  });
+  resizeObserver.observe(container);
+  
+  // Handle orientation change
+  window.addEventListener('orientationchange', () => {
+    setTimeout(handleResize, 100);
+  });
+  
+  // --- EVENT INTERAKSI ---
+  document.getElementById('buyBtn').addEventListener('click', () => {
+    alert("🚀 TurboFlow Pro ditambahkan ke keranjang! (Demo interaksi)");
+  });
+  
+  document.getElementById('inquiryBtn').addEventListener('click', () => {
+    alert("📞 Hubungi sales: 0800-123-POMPA atau WhatsApp untuk info stok.");
+  });
+  
+  // Touch device feedback
+  if ('ontouchstart' in window) {
+    console.log("Mode sentuhan aktif - 360° siap digerakkan");
+  }
+  
+  console.log("3D Pompa Responsif - Siap untuk semua device!");
+</script>
+</body>
+</html>
